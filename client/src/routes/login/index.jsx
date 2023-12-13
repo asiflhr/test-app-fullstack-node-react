@@ -18,15 +18,15 @@ function Login() {
   const [credentials, setCredentials] = useState({ username: '', password: '' })
 
   const handleLogin = () => {
-    setLoading(true)
-    axios
-      .post('http://localhost:8080/auth/login', credentials)
-      .then((response) => {
-        localStorage.setItem('token', response.data.token)
-        // Redirect to a protected route or update state to indicate login success
-      })
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false))
+    // setLoading(true)
+    // axios
+    //   .post('http://localhost:8080/auth/login', credentials)
+    //   .then((response) => {
+    //     localStorage.setItem('token', response.data.token)
+    //     // Redirect to a protected route or update state to indicate login success
+    //   })
+    //   .catch((error) => console.error(error))
+    // .finally(() => setLoading(false))
   }
 
   return (
