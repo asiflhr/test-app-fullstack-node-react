@@ -16,10 +16,7 @@ app.use(cors())
 app.use(express.json())
 app.use(bodyParser.json())
 
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(mongoURI, {}).then(() => console.log('Connected to MongoDB'))
 
 // Auth routes
 app.use(authRoutes)

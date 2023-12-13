@@ -34,14 +34,14 @@ const App = () => {
     !!localStorage.getItem('token')
   )
 
-  // const PrivateRoute = ({ component: Component, ...rest }) => (
-  //   <Route
-  //     {...rest}
-  //     render={(props) =>
-  //       authenticated ? <Component {...props} /> : <Redirect to='/login' />
-  //     }
-  //   />
-  // )
+  const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route
+      {...rest}
+      render={(props) =>
+        authenticated ? <Component {...props} /> : <Redirect to='/login' />
+      }
+    />
+  )
 
   return <RouterProvider router={router} />
 }

@@ -11,6 +11,7 @@ import {
   TextField,
   Box,
 } from '@mui/material'
+import UsersCard from '../../components/ui/UsersCard'
 
 function Users() {
   const theme = useTheme()
@@ -19,12 +20,12 @@ function Users() {
   const [newUser, setNewUser] = useState({ username: '', password: '' })
 
   useEffect(() => {
-    // setLoading(true)
+    setLoading(true)
     axios
       .get('http://localhost:8080/users')
       .then((response) => setUsers(response.data))
       .catch((error) => console.error(error))
-    // .finally(() => setLoading(false))
+      .finally(() => setLoading(false))
   }, [])
 
   const handleCreateUser = () => {
@@ -68,20 +69,15 @@ function Users() {
       }}
     >
       <h2>Users</h2>
-      <List>
-        {users.map((user) => (
-          <ListItem key={user._id}>
-            {user.username}
-            <Button
-              variant='contained'
-              color='secondary'
-              onClick={() => handleDeleteUser(user._id)}
-            >
-              Delete
-            </Button>
-          </ListItem>
-        ))}
-      </List>
+      {users?.map((user) => (
+        <>
+          <UsersCard
+            user={user}
+            handleDeleteUser={handleDeleteUser}
+            key={user._id}
+          />
+        </>
+      ))}
       <Box
         sx={{
           display: 'flex',
