@@ -20,7 +20,7 @@ function Users() {
   const handleDeleteUser = (userId) => {
     setLoading(true)
     axios
-      .delete(`http://localhost:8080/users/${userId}`)
+      .delete(`${import.meta.env.VITE_API_URL}users/${userId}`)
       .then(() => {
         setUsers(users.filter((user) => user._id !== userId))
       })
@@ -31,7 +31,7 @@ function Users() {
   const handleEditUser = (userId) => {
     setLoading(true)
     axios
-      .delete(`${import.meta.env.VITE_API_URL}/users/${userId}`)
+      .delete(`${import.meta.env.VITE_API_URL}users/${userId}`)
       .then(() => {
         setUsers(users.filter((user) => user._id !== userId))
       })

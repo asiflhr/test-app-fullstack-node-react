@@ -6,10 +6,10 @@ const Posts = () => {
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
-    // Fetch users from the backend on component mount
+    // Fetch posts from the backend on component mount
 
     axios
-      .get('http://localhost:8080/posts')
+      .get(`${import.meta.env.VITE_API_URL}posts`)
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error(error))

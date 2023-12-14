@@ -23,7 +23,7 @@ function Login() {
 
   const handleLogin = async () => {
     axios
-      .post('http://localhost:8080/login', credentials)
+      .post(`${import.meta.env.VITE_API_URL}login`, credentials)
       .then((response) => {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('user', JSON.stringify(response.data.user))

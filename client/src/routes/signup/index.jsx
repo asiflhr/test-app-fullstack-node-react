@@ -27,7 +27,7 @@ function Signup() {
     }
 
     axios
-      .post('http://localhost:8080/users', newUser)
+      .post(`${import.meta.env.VITE_API_URL}users`, newUser)
       .then((response) => {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('user', JSON.stringify(response.data.user))
