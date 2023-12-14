@@ -11,7 +11,7 @@ function Users() {
   useEffect(() => {
     setLoading(true)
     axios
-      .get('http://localhost:8080/users')
+      .get(`${import.meta.env.VITE_API_URL}users`)
       .then((response) => setUsers(response.data))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
@@ -31,7 +31,7 @@ function Users() {
   const handleEditUser = (userId) => {
     setLoading(true)
     axios
-      .delete(`http://localhost:8080/users/${userId}`)
+      .delete(`${import.meta.env.VITE_API_URL}/users/${userId}`)
       .then(() => {
         setUsers(users.filter((user) => user._id !== userId))
       })
