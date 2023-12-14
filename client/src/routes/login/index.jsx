@@ -1,5 +1,5 @@
 // src/components/Login.js
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Backdrop,
   CircularProgress,
@@ -10,25 +10,24 @@ import {
   Typography,
 } from '@mui/material'
 import axios from 'axios'
-import { Navigate, redirect, Link, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useUserContext } from '../../context/AuthContext'
 
 function Login() {
-  const theme = useTheme()
-  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const { setUser, isLoading: isUserLoading } = useUserContext()
   const [credentials, setCredentials] = useState({ username: '', password: '' })
 
-  const handleLogin = () => {
-    setLoading(true)
+  const handleLogin = async () => {
     axios
       .post('http://localhost:8080/login', credentials)
       .then((response) => {
         localStorage.setItem('token', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+        setUser(response.data.user)
+        navigate('/users')
       })
       .catch((error) => console.error(error))
-      .finally(() => {
-        setLoading(false)
-        redirect('/users')
-      })
   }
 
   return (
@@ -80,6 +79,13 @@ function Login() {
         <Button variant='contained' color='primary' onClick={handleLogin}>
           Login
         </Button>
+
+        <Typography variant='body1'>
+          Don't have an account?{' '}
+          <Link to='/signup' style={{ textDecoration: 'none' }}>
+            Signup
+          </Link>
+        </Typography>
       </Box>
 
       <Backdrop
@@ -87,7 +93,7 @@ function Login() {
           zIndex: theme.zIndex.drawer + 1,
           color: '#fff',
         })}
-        open={loading}
+        open={isUserLoading}
       >
         <CircularProgress color='inherit' />
       </Backdrop>

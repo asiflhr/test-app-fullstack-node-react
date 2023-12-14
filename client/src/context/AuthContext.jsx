@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { createContext, useContext, useEffect, useState } from 'react'
-import axios from 'axios'
 
 export const INITIAL_USER = {
   id: '',
-  name: '',
   username: '',
-  // email: '',
+  role: 'user',
 }
 
 const INITIAL_STATE = {
@@ -27,15 +25,8 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false)
 
   const getCurrentUser = async () => {
-    setIsLoading(true)
-    axios
-      .post(`http://localhost:8080/users/${id}`)
-      .then((response) => {
-        localStorage.setItem('token', response.data.token)
-        // Redirect to a protected route or update state to indicate login success
-      })
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false))
+    const user = localStorage.getItem('user')
+    return JSON.parse(user)
   }
 
   const checkAuthUser = async () => {
@@ -44,16 +35,13 @@ export function AuthProvider({ children }) {
       const currentAccount = await getCurrentUser()
       if (currentAccount) {
         setUser({
-          id: currentAccount.$id,
-          name: currentAccount.name,
+          id: currentAccount._id,
           username: currentAccount.username,
-          // email: currentAccount.email,
+          role: currentAccount.role,
         })
         setIsAuthenticated(true)
-
         return true
       }
-
       return false
     } catch (error) {
       console.error(error)
@@ -63,14 +51,23 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // Added useEffect hook to listen for localStorage changes
   useEffect(() => {
-    const cookieFallback = localStorage.getItem('cookieFallback')
+    const handleStorageChange = () => {
+      checkAuthUser() // Trigger re-render on localStorage update
+    }
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
+  useEffect(() => {
+    const cookieFallback = localStorage.getItem('user')
     if (
       cookieFallback === '[]' ||
       cookieFallback === null ||
       cookieFallback === undefined
     ) {
-      navigate('/sign-in')
+      navigate('/login')
     }
 
     checkAuthUser()

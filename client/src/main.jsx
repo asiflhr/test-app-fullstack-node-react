@@ -12,32 +12,14 @@ import {
 import './index.css'
 import { Home, Login, Posts, Users } from './routes'
 import App from './App'
-
-// todo: set protected routing for frontend, check authentication, and make auth functions login logout, and make ui
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
-  },
-  {
-    path: '/users',
-    element: <Users />,
-  },
-  {
-    path: '/posts',
-    element: <Posts />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-])
+import { AuthProvider } from './context/AuthContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 )
