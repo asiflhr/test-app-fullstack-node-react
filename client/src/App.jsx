@@ -1,13 +1,12 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Login, Signup, Users } from './routes'
-import Navbar from './components/ui/Navbar'
 import AuthLayout from './layouts/auth-layout'
 import RootLayout from './layouts/root-layout'
 
 const App = () => {
   return (
-    <div>
+    <main>
       <Routes>
         {/* public routes */}
         <Route element={<AuthLayout />}>
@@ -20,11 +19,7 @@ const App = () => {
           <Route path='/users' element={<Users />} />
         </Route>
       </Routes>
-      {/* <Navbar
-        isAuthenticated={authenticated}
-        setIsAuthenticated={(state) => setAuthenticated(state)}
-      /> */}
-    </div>
+    </main>
   )
 }
 

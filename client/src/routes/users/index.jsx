@@ -1,15 +1,7 @@
 // src/components/Users.js
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import {
-  Backdrop,
-  CircularProgress,
-  useTheme,
-  Button,
-  TextField,
-  Typography,
-  Box,
-} from '@mui/material'
+import { Backdrop, CircularProgress, Typography, Box } from '@mui/material'
 import UsersCard from '../../components/ui/UsersCard'
 
 function Users() {
@@ -26,6 +18,17 @@ function Users() {
   }, [])
 
   const handleDeleteUser = (userId) => {
+    setLoading(true)
+    axios
+      .delete(`http://localhost:8080/users/${userId}`)
+      .then(() => {
+        setUsers(users.filter((user) => user._id !== userId))
+      })
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false))
+  }
+
+  const handleEditUser = (userId) => {
     setLoading(true)
     axios
       .delete(`http://localhost:8080/users/${userId}`)
@@ -54,6 +57,7 @@ function Users() {
         <UsersCard
           user={user}
           handleDeleteUser={handleDeleteUser}
+          handleEditUser={handleEditUser}
           key={user._id}
         />
       ))}

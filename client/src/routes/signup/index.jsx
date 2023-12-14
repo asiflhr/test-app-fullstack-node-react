@@ -3,47 +3,39 @@ import React, { useEffect, useState } from 'react'
 import {
   Backdrop,
   CircularProgress,
-  useTheme,
   Button,
   TextField,
   Box,
   Typography,
 } from '@mui/material'
 import axios from 'axios'
-import { redirect, Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useUserContext } from '../../context/AuthContext'
 
-function Signup({ setIsAuthenticated }) {
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext()
+function Signup() {
+  const {
+    setUser,
+    isLoading: isUserLoading,
+    setIsAuthenticated,
+  } = useUserContext()
   const [newUser, setNewUser] = useState({ username: '', password: '' })
 
   const handleCreateUser = async () => {
-    setLoading(true)
     if (!newUser.username || !newUser.password) {
       console.error('Username and password are required.')
-      setLoading(false)
       return
     }
 
     axios
       .post('http://localhost:8080/users', newUser)
       .then((response) => {
-        setUsers([...users, response.data])
         localStorage.setItem('token', response.data.token)
-        localStorage.setItem('user', response.data.user)
-        setNewUser({ username: '', password: '' })
+        localStorage.setItem('user', JSON.stringify(response.data.user))
         setIsAuthenticated(true)
+        setUser(response.data.user)
+        navigate('/users')
       })
       .catch((error) => console.error(error))
-
-    const isLoggedIn = await checkAuthUser()
-    if (isLoggedIn) {
-      setCredentials({ username: '', password: '' })
-
-      navigate('/users')
-    } else {
-      console.log({ title: 'Login failed. Please try again.' })
-      return
-    }
   }
 
   return (

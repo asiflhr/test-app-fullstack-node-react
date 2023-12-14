@@ -40,7 +40,7 @@ const Navbar = () => {
           <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
             Home
           </Typography>
-          {isAuthenticated && (
+          {isAuthenticated && !isLoading && (
             <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center ' }}>
               <Typography>Hi, {user.username}</Typography>
               <Button

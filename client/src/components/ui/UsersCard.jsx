@@ -6,17 +6,21 @@ import {
   Button,
   Backdrop,
   CircularProgress,
-  useTheme,
 } from '@mui/material'
 import { purple } from '@mui/material/colors'
+import { useUserContext } from '../../context/AuthContext'
 
-const UsersCard = ({ user, handleDeleteUser }) => {
-  const theme = useTheme()
-  const [loading, setLoading] = useState(false)
+const UsersCard = ({ user, handleDeleteUser, handleEdituser }) => {
+  const {
+    user: currentUser,
+    isLoading: isUserLoading,
+    isAuthenticated,
+  } = useUserContext()
 
   return (
     <Box
       sx={{
+        position: 'relative',
         width: '400px',
         height: '100px',
         backgroundColor: 'white',
@@ -59,23 +63,38 @@ const UsersCard = ({ user, handleDeleteUser }) => {
         </Box>
       </Box>
 
-      <Button
-        onClick={() => handleDeleteUser(user._id)}
-        sx={{ borderRadius: '20px', mt: 1 }}
-        size='small'
-        type='submit'
-        variant='contained'
-        color='primary'
-      >
-        Delete
-      </Button>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        {currentUser?.role === 'admin' && isAuthenticated && (
+          <Button
+            onClick={() => handleDeleteUser(user._id)}
+            size='small'
+            type='submit'
+            variant='contained'
+            color='error'
+          >
+            Delete
+          </Button>
+        )}
+        {currentUser?.id === user._id && isAuthenticated && (
+          <Button
+            onClick={() => handleDeleteUser(user._id)}
+            sx={{ mt: 1 }}
+            size='small'
+            type='submit'
+            variant='outlined'
+            color='primary'
+          >
+            Edit
+          </Button>
+        )}
+      </Box>
 
       <Backdrop
         sx={(theme) => ({
           zIndex: theme.zIndex.drawer + 1,
           color: '#fff',
         })}
-        open={loading}
+        open={isUserLoading}
       >
         <CircularProgress color='inherit' />
       </Backdrop>

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import {
   Backdrop,
   CircularProgress,
-  useTheme,
   Button,
   TextField,
   Box,
@@ -15,7 +14,11 @@ import { useUserContext } from '../../context/AuthContext'
 
 function Login() {
   const navigate = useNavigate()
-  const { setUser, isLoading: isUserLoading } = useUserContext()
+  const {
+    setUser,
+    isLoading: isUserLoading,
+    setIsAuthenticated,
+  } = useUserContext()
   const [credentials, setCredentials] = useState({ username: '', password: '' })
 
   const handleLogin = async () => {
@@ -24,6 +27,7 @@ function Login() {
       .then((response) => {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('user', JSON.stringify(response.data.user))
+        setIsAuthenticated(true)
         setUser(response.data.user)
         navigate('/users')
       })
