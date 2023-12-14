@@ -5,10 +5,9 @@ import {
   Backdrop,
   CircularProgress,
   useTheme,
-  List,
-  ListItem,
   Button,
   TextField,
+  Typography,
   Box,
 } from '@mui/material'
 import UsersCard from '../../components/ui/UsersCard'
@@ -68,15 +67,15 @@ function Users() {
         gap: '1rem',
       }}
     >
-      <h2>Users</h2>
+      <Typography variant='h3' color='initial' fontWeight='bold'>
+        Users
+      </Typography>
       {users?.map((user) => (
-        <>
-          <UsersCard
-            user={user}
-            handleDeleteUser={handleDeleteUser}
-            key={user._id}
-          />
-        </>
+        <UsersCard
+          user={user}
+          handleDeleteUser={handleDeleteUser}
+          key={user._id}
+        />
       ))}
       <Box
         sx={{

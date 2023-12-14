@@ -1,9 +1,11 @@
 const User = require('../models/User.js')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
   createUser: async (req, res) => {
     try {
-      const { username, password, role } = req.body
+      var { username, password, role } = req.body
 
       // Validate if required fields are present
       if (!username || !password) {
@@ -20,10 +22,22 @@ module.exports = {
         })
       }
 
-      const user = new User({ username, password, role })
-      await user.save()
+      // const salt = await bcrypt.genSalt(10)
+      const hashedPass = await bcrypt.hash(password, 10)
+      password = hashedPass
 
-      res.status(201).json(user)
+      const newUser = new User({ username, password: hashedPass, role })
+      const user = await newUser.save()
+
+      const token = jwt.sign(
+        {
+          username: user.username,
+          id: user._id,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      ) // secret key and sesssion time
+      res.status(200).json({ user, token })
     } catch (error) {
       console.error(error)
       res.status(500).json({ error: 'Internal Server Error' })
@@ -115,32 +129,27 @@ module.exports = {
 
   loginUser: async (req, res) => {
     const { username, password } = req.body
+    User.findOne({ username: username }).then((user) => {
+      //if user not exist than return status 400
+      if (!user) return res.status(400).json({ msg: 'User not exist' })
 
-    try {
-      const user = await User.findOne({ username })
+      bcrypt.compare(password, user.password, (err, data) => {
+        //if error than throw error
+        if (err) throw err
 
-      if (!user) {
-        return res.status(401).json({ message: 'Invalid credentials' })
-      }
+        //if both match than you can do anything
+        if (data) {
+          const token = jwt.sign(
+            { user: { id: user._id, username, role: user.role } },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+          )
 
-      const isPasswordMatch = await user.comparePassword(password)
-
-      if (!isPasswordMatch) {
-        return res.status(401).json({ message: 'Invalid credentials' })
-      }
-
-      const token = jwt.sign(
-        { user: { id: user._id, role: user.role } },
-        'your-secret-key',
-        {
-          expiresIn: '1h',
+          return res.status(200).json({ user, token })
+        } else {
+          return res.status(401).json({ msg: 'Invalid credencial' })
         }
-      )
-
-      res.json({ token })
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: 'Internal Server Error' })
-    }
+      })
+    })
   },
 }

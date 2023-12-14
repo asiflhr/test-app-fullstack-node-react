@@ -4,9 +4,14 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import {
+  createBrowserRouter,
+  BrowserRouter,
+  RouterProvider,
+} from 'react-router-dom'
 import './index.css'
 import { Home, Login, Posts, Users } from './routes'
+import App from './App'
 
 // todo: set protected routing for frontend, check authentication, and make auth functions login logout, and make ui
 
@@ -29,25 +34,10 @@ const router = createBrowserRouter([
   },
 ])
 
-const App = () => {
-  const [authenticated, setAuthenticated] = useState(
-    !!localStorage.getItem('token')
-  )
-
-  const PrivateRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
-        authenticated ? <Component {...props} /> : <Redirect to='/login' />
-      }
-    />
-  )
-
-  return <RouterProvider router={router} />
-}
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 )
